@@ -17,6 +17,8 @@ import com.lavaingot.lavalibs.Lib;
 import com.lavaingot.tc.Group;
 
 public class Main extends JavaPlugin implements Listener{
+	public static String pluginname;
+	
 	String[] badder;
 	public File playersfile = new File(getDataFolder(), "players.yml");
 	public static FileConfiguration players;
@@ -27,8 +29,9 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@Override
 	public void onEnable() {
+		pluginname = getDescription().getName();
 		instance = this;
-		getLogger().info(ChatColor.GOLD + "Hello World!");
+		Lib.print(ChatColor.GOLD + "Hello World!", pluginname);;
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		//resources init
@@ -74,7 +77,7 @@ public class Main extends JavaPlugin implements Listener{
 	@Override
 	public void onDisable() {
 		instance = null;
-		getLogger().info("Goodbye World!");
+		Lib.print("Goodbye World!", pluginname);;
 		savePlayers();
 	}
 
@@ -83,7 +86,7 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = event.getPlayer();
 		String message = event.getMessage();
 		String format = event.getFormat();
-		Lib.print(format);
+		Lib.print(format, pluginname);
 		
 		for (String curse : badder) {
 			while (message.contains(curse)) {
@@ -136,7 +139,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	public void onPing(ServerListPingEvent e) {
-		System.out.print(getConfig().getBoolean("MotDNewplayer"));
+		Lib.print(getConfig().getBoolean("MotDNewplayer"), pluginname);;
 		if (getConfig().getBoolean("MotDNewplayer")){
 			String newestPlayer = null;
 			for (String key : players.getKeys(true)) {
@@ -171,7 +174,7 @@ public class Main extends JavaPlugin implements Listener{
 	public void checkFileExists(String filename, File file) {
 		if (!file.exists()) {
 			
-			Lib.print(filename + " not found, creating!");
+			Lib.print(filename + " not found, creating!", pluginname);
 			if (filename.equals("config.yml")) {
 				saveDefaultConfig();
 			}
@@ -179,17 +182,16 @@ public class Main extends JavaPlugin implements Listener{
 				saveResource(filename, true);
 			}
 			
-			
 		} else {
 			
-		    getLogger().info(filename + " found, loading!");
-		    System.out.println(getResource(filename));
+		    Lib.print(filename + " found, loading!", pluginname);
+		    Lib.print(getResource(filename), pluginname);;
 		}
 	}
 	
 	public void saveGroups() {
 		try {
-			players.save(groupsfile);
+			groups.save(groupsfile);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

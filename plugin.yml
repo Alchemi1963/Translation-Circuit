@@ -1,0 +1,39 @@
+main: com.lavaingot.tc.Main
+version: 1.0
+name: TranslationCircuit
+
+commands:
+    send:
+        description: Send a private message
+        usage: /send [player] [message]
+    
+    mute:
+        description: Mute a bad player
+        usage: /mute [player]
+    
+    unmute:
+        description: Unmute a player
+        usage: /mute [player]
+        
+    group:
+        description: Group chat manager
+        usage: /group help
+        
+    reply:
+        description: Reply to your last private message
+        usage: /reply [message]
+        aliases: [r]
+        
+permissions:
+    tc:
+        privatechat:
+            default: player
+        
+        mute:
+            default: op
+            
+        unmute:
+            default: op
+            
+        colorchat:
+            default: player

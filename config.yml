@@ -1,0 +1,20 @@
+curse_message: "&4No swearing!"
+mute_message: "&o&7Sorry, but you're muted now"
+mute_message_op: "You have muted $player$"
+unmute_message: "&6&oYay, you are unmuted!"
+unmute_message_op: "You have unmuted $player$"
+player_offline_message: "&6$player$ &7is offline"
+no_message: "Please provide a message"
+first_join: "&6&oWelcome to this server!"
+invalid_group: "&o&7You are not a part of this group or this group does not exist..."
+
+curse_words: arse, ass, asshole, bastard, bitch, crap, cunt, damn, fuck, goddamn, hell, holy shit, motherfucker, nigga, nigger, shit, shitass, shit ass, son of a bitch, son of a whore, twat 
+
+prefixes:
+    default: "&7["
+    
+suffixes:
+    default: "]"
+    
+#set the MOTD to the newest player
+MotDNewplayer: 0

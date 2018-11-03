@@ -1,4 +1,4 @@
-package com.lavaingot.tc;
+package com.alchemi.tc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -6,8 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.alchemi.tc.Main;
 import com.lavaingot.lavalibs.Lib;
-import com.lavaingot.tc.Main;
 
 public class PrivateChat implements CommandExecutor {
 	

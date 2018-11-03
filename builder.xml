@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Translation-Circuit" default="CreateJar" basedir=".">
+    <target name="CreateJar" description="Create a jar for the project">
+        <mkdir dir="target"></mkdir>
+        <jar destfile="../Test-Server/plugins/TranslationCircuit.jar">
+            <fileset dir="bin/"></fileset>
+            <fileset file="plugin.yml"></fileset>
+            <fileset file="config.yml"></fileset>
+			<fileset file="players.yml"></fileset>
+			<fileset dir="groups/"></fileset>
+        </jar>
+    </target>
+</project>

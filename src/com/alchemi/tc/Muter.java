@@ -1,4 +1,4 @@
-package com.lavaingot.tc;
+package com.alchemi.tc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -13,7 +13,7 @@ public class Muter implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
-		if (Lib.checkCmdPermission(cmd, sender, "tc.mute", "mute")) {
+		if (Lib.checkCmdPermission(cmd, sender, "tc.mute", "tc mute")) {
 			if (args.length < 1) {
 				return false;
 			} else {
@@ -25,7 +25,7 @@ public class Muter implements CommandExecutor{
 				Lib.sendMsg(Main.config.getString("mute_message"), master, null);
 			}
 		//unmute
-		} else if (Lib.checkCmdPermission(cmd, sender, "tc.unmute", "unmute")) {
+		} else if (Lib.checkCmdPermission(cmd, sender, "tc.unmute", "tc unmute")) {
 			if (args.length < 1) {
 				return false;
 			} else {

@@ -1,6 +1,9 @@
-package com.lavaingot.tc;
+package com.alchemi.tc;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Array;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -13,22 +16,29 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.alchemi.tc.Group;
 import com.lavaingot.lavalibs.Lib;
-import com.lavaingot.tc.Group;
+
+import net.milkbowl.vault.chat.Chat;
 
 public class Main extends JavaPlugin implements Listener{
 	public static String pluginname;
 	
-	String[] badder;
+	
+	List<String> curse_words;
 	public File playersfile = new File(getDataFolder(), "players.yml");
 	public static FileConfiguration players;
 	public File groupsfile = new File(getDataFolder() + "/groups", "groups.yml");
 	public static FileConfiguration groups;
 	public static FileConfiguration config;
+	public static boolean VaultPresent = false;
 	public static Main instance = null;
+	private static Chat chat = null;
 	
 	@Override
 	public void onEnable() {
+		
 		pluginname = getDescription().getName();
 		instance = this;
 		Lib.print(ChatColor.GOLD + "Hello World!", pluginname);;
@@ -43,13 +53,7 @@ public class Main extends JavaPlugin implements Listener{
 		checkFileExists("groups/groups.yml", groupsfile);
 		
 		String bad = config.getString("curse_words");
-		badder = bad.split(", ");
-		int x = 0;
-		for (String badword : badder) {
-			badword = ' ' + badword + ' ';
-			badder[x] = badword;
-			x += 1;
-		}
+		curse_words = Arrays.asList(bad.split(", "));
 		
 		players = new YamlConfiguration();
 		try {
@@ -72,6 +76,7 @@ public class Main extends JavaPlugin implements Listener{
 		//register things
 		registerCommands();
 		
+		
 	}
 	
 	@Override
@@ -86,54 +91,81 @@ public class Main extends JavaPlugin implements Listener{
 		Player player = event.getPlayer();
 		String message = event.getMessage();
 		String format = event.getFormat();
-		Lib.print(format, pluginname);
 		
-		for (String curse : badder) {
-			while (message.contains(curse)) {
-				String replacement = new String();
-				char[] curses = curse.toCharArray();
-				for (char letter : curses) {
-					replacement += '*';
-					letter = '*';
-					curses[replacement.length()-1] = letter;
-				}
-				message = message.replaceAll(curse, replacement);
-			}
+		if (getPlayers().getBoolean(player.getName() + ".muted")) {
+			event.setCancelled(true);
+			Lib.sendMsg(getConfig().getString("mute_message"), player, null);
 		}
-		if (!event.getMessage().equals(message)) {
-			Lib.sendMsg(getConfig().getString("curse_message"), player, null);
+		
+		message = filter(message, player);
+		
+		if (event.getMessage().toLowerCase().equals("hello there")) {
+			message = message + "\n&7&o[Server] &n&8General &9Kenobi...";
 		}
 		
 		if (player.hasPermission("tc.colorchat")) {
 			message = Lib.cc(message);
 		}
+			
+		String newFormat = format.replaceFirst("<", Lib.cc(getPlayers().getString(player.getName() + ".prefix")));
+		newFormat = newFormat.replaceFirst(">", Lib.cc(getPlayers().getString(player.getName() + ".suffix") + "&r"));
+		event.setFormat(newFormat);
+		event.setMessage(message);
 		
-		if (getPlayers().getBoolean(player.getName() + ".muted")) {
-			event.setCancelled(true);
-			Lib.sendMsg(getConfig().getString("mute_message"), player, null);
-		} else {
-			String newFormat = format.replaceFirst("<", Lib.cc(getPlayers().getString(player.getName() + ".prefix")));
-			newFormat = newFormat.replaceFirst(">", Lib.cc(getPlayers().getString(player.getName() + ".suffix") + "&r"));
-			event.setFormat(newFormat);
-			event.setMessage(message);
+	}
+	
+	public String filter(String message, Player player) {
+		
+		String[] chop_message = message.split(" ");
+		String n_message = "";
+		for (String chop : chop_message) {
+			if (curse_words.contains(chop)) {
+				chop = new String(new char[chop.length()]).replace("\0", "*");
+			}
+			
+			if (n_message == "") n_message = chop;
+			else n_message = n_message + " " + chop;
 		}
+		
+		if (!n_message.equals(message)) {
+			Lib.sendMsg(getConfig().getString("curse_message"), player, null);
+		}
+		
+		return n_message;
 	}
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		String playername = player.getName();
-		if (!getPlayers().contains(playername)) {
-			players.createSection(playername);
-			players.set(playername + ".muted", false);
-			players.set(playername + ".prefix", getConfig().getString("prefixes.default"));
-			players.set(playername + ".suffix", getConfig().getString("suffixes.default"));
-			players.set(playername + ".rank", "Default");
-			players.set(playername + ".lastchat", null);
-			players.createSection(playername + ".groups");
-			Lib.sendMsg(getConfig().getString("first_join"), player, null);
-			Group.selected_groups.put(player, null);
-			savePlayers();
+		if (!VaultPresent) {
+			Player player = event.getPlayer();
+			String playername = player.getName();
+			if (!getPlayers().contains(playername)) {
+				players.createSection(playername);
+				players.set(playername + ".muted", false);
+				players.set(playername + ".prefix", getConfig().getString("prefixes.default"));
+				players.set(playername + ".suffix", getConfig().getString("suffixes.default"));
+				players.set(playername + ".rank", "Default");
+				players.set(playername + ".lastchat", null);
+				players.createSection(playername + ".groups");
+				Lib.sendMsg(getConfig().getString("first_join"), player, null);
+				Group.selected_groups.put(player, null);
+				savePlayers();
+			}
+		} else {
+			Player player = event.getPlayer();
+			String playername = player.getName();
+			if (!getPlayers().contains(playername)) {
+				players.createSection(playername);
+				players.set(playername + ".muted", false);
+				players.set(playername + ".prefix", "YO MOMMA");
+				players.set(playername + ".suffix", getConfig().getString("suffixes.default"));
+				players.set(playername + ".rank", "Default");
+				players.set(playername + ".lastchat", null);
+				players.createSection(playername + ".groups");
+				Lib.sendMsg(getConfig().getString("first_join"), player, null);
+				Group.selected_groups.put(player, null);
+				savePlayers();
+			}
 		}
 	}
 	
@@ -152,11 +184,11 @@ public class Main extends JavaPlugin implements Listener{
 	}
 	
 	private void registerCommands() {
-		getCommand("send").setExecutor(new PrivateChat());
-		getCommand("reply").setExecutor(new PrivateChat());
-		getCommand("mute").setExecutor(new Muter());
-		getCommand("unmute").setExecutor(new Muter());
-		getCommand("group").setExecutor(new Group(this));
+		getCommand("tc send").setExecutor(new PrivateChat());
+		getCommand("tc reply").setExecutor(new PrivateChat());
+		getCommand("tc mute").setExecutor(new Muter());
+		getCommand("tc unmute").setExecutor(new Muter());
+		getCommand("tc group").setExecutor(new Group(this));
 	}
 	
 	public FileConfiguration getPlayers() {
@@ -184,8 +216,8 @@ public class Main extends JavaPlugin implements Listener{
 			
 		} else {
 			
-		    Lib.print(filename + " found, loading!", pluginname);
-		    Lib.print(getResource(filename), pluginname);;
+			Lib.print(filename + " found, loading!", pluginname);
+			
 		}
 	}
 	

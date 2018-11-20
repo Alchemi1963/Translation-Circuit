@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.lavaingot.lavalibs.Lib;
+import com.alchemi.al.Library;
 
 public class Group implements CommandExecutor{
 	
@@ -21,10 +21,10 @@ public class Group implements CommandExecutor{
 		Player player = (Player) sender;
 		String playername = player.getName();
 		
-		if (Lib.checkCmdPermission(cmd, sender, "tc.group", "group")) {
+		if (Library.checkCmdPermission(cmd, sender, "tc.group", "group")) {
 			if (args.length < 2) {
 				if (args[0].equals("help")) {
-					Lib.sendMsg("Help me Obi Wan Kenobi, you're my only hope...", player, null);
+					Library.sendMsg("Help me Obi Wan Kenobi, you're my only hope...", player, null);
 				}
 				else {
 					return false;
@@ -46,7 +46,7 @@ public class Group implements CommandExecutor{
 						Main.instance.savePlayers();
 					}
 					else {
-						Lib.sendMsg("Group name must be one word", player, null);
+						Library.sendMsg("Group name must be one word", player, null);
 					}
 				} 
 				else if (args[0].equals("select")){
@@ -58,7 +58,7 @@ public class Group implements CommandExecutor{
 					Main.players.set(args[1] + ".groups", playergroups);
 					
 					List<String> players = Main.groups.getStringList(args[2] + ".members");
-					Lib.print(players, Main.pluginname);
+					Library.print(players, Main.pluginname);
 					players.add(args[1]);
 					Main.groups.set(args[2] + ".members", players);
 					
@@ -68,21 +68,21 @@ public class Group implements CommandExecutor{
 				else if (args[0].equals("remove")) {
 					
 					if (args.length > 2) {
-						Lib.sendMsg("Group name must be one word", player, null);
+						Library.sendMsg("Group name must be one word", player, null);
 					} else {
 
 						List<String> members = Main.groups.getStringList(args[1] + ".members");
-						Lib.print(members + ":" + args[1] + ".members", Main.pluginname);
+						Library.print(members + ":" + args[1] + ".members", Main.pluginname);
 						for (String member : members) {
 							List<String> groupsMember = Main.players.getStringList(member + ".groups");
 							groupsMember.remove(args[1]);
-							Lib.print(groupsMember, Main.pluginname);
+							Library.print(groupsMember, Main.pluginname);
 							Main.players.set(member + ".groups", groupsMember);
 						}
 						Main.groups.set(args[1], null);
 						
-						Lib.print(Main.groups.getKeys(true), Main.pluginname);
-						Lib.print(Main.players.getStringList(playername + ".groups"), Main.pluginname);
+						Library.print(Main.groups.getKeys(true), Main.pluginname);
+						Library.print(Main.players.getStringList(playername + ".groups"), Main.pluginname);
 						Main.instance.saveGroups();
 						Main.instance.savePlayers();
 					}

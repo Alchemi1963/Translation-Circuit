@@ -1,7 +1,6 @@
 package com.alchemi.tc;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,8 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.alchemi.tc.Group;
-import com.lavaingot.lavalibs.Lib;
+import com.alchemi.al.Library;
 
 import net.milkbowl.vault.chat.Chat;
 
@@ -40,8 +38,9 @@ public class Main extends JavaPlugin implements Listener{
 	public void onEnable() {
 		
 		pluginname = getDescription().getName();
+		
 		instance = this;
-		Lib.print(ChatColor.GOLD + "Hello World!", pluginname);;
+		Library.print(ChatColor.GOLD + "Hello World!", pluginname);;
 		getServer().getPluginManager().registerEvents(this, this);
 		
 		//resources init
@@ -82,7 +81,7 @@ public class Main extends JavaPlugin implements Listener{
 	@Override
 	public void onDisable() {
 		instance = null;
-		Lib.print("Goodbye World!", pluginname);;
+		Library.print("Goodbye World!", pluginname);;
 		savePlayers();
 	}
 
@@ -94,7 +93,7 @@ public class Main extends JavaPlugin implements Listener{
 		
 		if (getPlayers().getBoolean(player.getName() + ".muted")) {
 			event.setCancelled(true);
-			Lib.sendMsg(getConfig().getString("mute_message"), player, null);
+			Library.sendMsg(getConfig().getString("mute_message"), player, null);
 		}
 		
 		message = filter(message, player);
@@ -104,11 +103,11 @@ public class Main extends JavaPlugin implements Listener{
 		}
 		
 		if (player.hasPermission("tc.colorchat")) {
-			message = Lib.cc(message);
+			message = Library.cc(message);
 		}
 			
-		String newFormat = format.replaceFirst("<", Lib.cc(getPlayers().getString(player.getName() + ".prefix")));
-		newFormat = newFormat.replaceFirst(">", Lib.cc(getPlayers().getString(player.getName() + ".suffix") + "&r"));
+		String newFormat = format.replaceFirst("<", Library.cc(getPlayers().getString(player.getName() + ".prefix")));
+		newFormat = newFormat.replaceFirst(">", Library.cc(getPlayers().getString(player.getName() + ".suffix") + "&r"));
 		event.setFormat(newFormat);
 		event.setMessage(message);
 		
@@ -128,7 +127,7 @@ public class Main extends JavaPlugin implements Listener{
 		}
 		
 		if (!n_message.equals(message)) {
-			Lib.sendMsg(getConfig().getString("curse_message"), player, null);
+			Library.sendMsg(getConfig().getString("curse_message"), player, null);
 		}
 		
 		return n_message;
@@ -147,7 +146,7 @@ public class Main extends JavaPlugin implements Listener{
 				players.set(playername + ".rank", "Default");
 				players.set(playername + ".lastchat", null);
 				players.createSection(playername + ".groups");
-				Lib.sendMsg(getConfig().getString("first_join"), player, null);
+				Library.sendMsg(getConfig().getString("first_join"), player, null);
 				Group.selected_groups.put(player, null);
 				savePlayers();
 			}
@@ -162,7 +161,7 @@ public class Main extends JavaPlugin implements Listener{
 				players.set(playername + ".rank", "Default");
 				players.set(playername + ".lastchat", null);
 				players.createSection(playername + ".groups");
-				Lib.sendMsg(getConfig().getString("first_join"), player, null);
+				Library.sendMsg(getConfig().getString("first_join"), player, null);
 				Group.selected_groups.put(player, null);
 				savePlayers();
 			}
@@ -171,7 +170,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	public void onPing(ServerListPingEvent e) {
-		Lib.print(getConfig().getBoolean("MotDNewplayer"), pluginname);;
+		Library.print(getConfig().getBoolean("MotDNewplayer"), pluginname);;
 		if (getConfig().getBoolean("MotDNewplayer")){
 			String newestPlayer = null;
 			for (String key : players.getKeys(true)) {
@@ -206,7 +205,7 @@ public class Main extends JavaPlugin implements Listener{
 	public void checkFileExists(String filename, File file) {
 		if (!file.exists()) {
 			
-			Lib.print(filename + " not found, creating!", pluginname);
+			Library.print(filename + " not found, creating!", pluginname);
 			if (filename.equals("config.yml")) {
 				saveDefaultConfig();
 			}
@@ -216,7 +215,7 @@ public class Main extends JavaPlugin implements Listener{
 			
 		} else {
 			
-			Lib.print(filename + " found, loading!", pluginname);
+			Library.print(filename + " found, loading!", pluginname);
 			
 		}
 	}

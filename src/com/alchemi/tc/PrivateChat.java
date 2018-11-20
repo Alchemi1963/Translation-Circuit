@@ -6,8 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.alchemi.tc.Main;
-import com.lavaingot.lavalibs.Lib;
+import com.alchemi.al.Library;
 
 public class PrivateChat implements CommandExecutor {
 	
@@ -17,7 +16,7 @@ public class PrivateChat implements CommandExecutor {
 		String playername = player.getName();
 		
 		//send
-		if (Lib.checkCmdPermission(cmd, sender, "tc.privatechat", "send")){
+		if (Library.checkCmdPermission(cmd, sender, "tc.privatechat", "send")){
 			if (args.length > 1) {
 			Player reciever = Bukkit.getPlayer(args[0]);
 			
@@ -37,17 +36,17 @@ public class PrivateChat implements CommandExecutor {
 			msg = msg.replaceFirst("<", Main.players.getString(playername + ".prefix"));
 			msg = msg.replaceFirst(">", Main.players.getString(playername + ".suffix"));
 			
-			Lib.sendMsg(msg, reciever, player);
+			Library.sendMsg(msg, reciever, player);
 			Main.players.set(playername + ".lastchat", reciever.getName());
 			}
 			else if (args.length == 1) {
-				Lib.sendMsg(Main.config.getString("no_message"), player, null);
+				Library.sendMsg(Main.config.getString("no_message"), player, null);
 			} 
 			else {
 				return false;
 			}
 		}
-		else if  (Lib.checkCmdPermission(cmd, sender, "tc.privatechat.reply", "reply")){
+		else if  (Library.checkCmdPermission(cmd, sender, "tc.privatechat.reply", "reply")){
 			if (args.length > 1) {
 				Player reciever = Bukkit.getPlayer(Main.players.getString(playername + ".lastchat"));
 				String msg = new String();
@@ -64,7 +63,7 @@ public class PrivateChat implements CommandExecutor {
 				msg = msg.replaceFirst("<", Main.players.getString(playername + ".prefix"));
 				msg = msg.replaceFirst(">", Main.players.getString(playername + ".suffix"));
 				
-				Lib.sendMsg(msg, reciever, player);
+				Library.sendMsg(msg, reciever, player);
 			}
 			else {
 				return false;

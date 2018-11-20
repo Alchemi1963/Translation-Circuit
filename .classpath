@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/servers/plugins/LavaLibs.jar"/>
 	<classpathentry kind="lib" path="/servers/spigot.jar"/>
 	<classpathentry kind="lib" path="/servers/plugins/Vault.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Alchemic Library"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
